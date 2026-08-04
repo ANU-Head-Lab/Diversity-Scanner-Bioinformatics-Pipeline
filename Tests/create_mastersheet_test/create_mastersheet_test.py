@@ -7,14 +7,15 @@ from pathlib import Path
 
 # Tests for create_mastersheet.py
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
+TEST = ROOT / "Tests" / "create_mastersheet_test"
 SCRIPT = ROOT / "Scripts" / "create_mastersheet.py"
 
 # Combine files with new template
 def test_new_template():
 
-    input_dir = ROOT / "Tests" / "create_mastersheet_input_1"
-    output = ROOT / "Tests" / "create_mastersheet_output_1.xlsx"
+    input_dir = TEST / "create_mastersheet_input_1"
+    output = TEST / "create_mastersheet_output_1.xlsx"
 
     result = subprocess.run(
         [
@@ -53,8 +54,8 @@ def test_new_template():
 # Combine files with old template
 def test_old_template():
 
-    input_dir = ROOT / "Tests" / "create_mastersheet_input_2"
-    output = ROOT / "Tests" / "create_mastersheet_output_2.xlsx"
+    input_dir = TEST / "create_mastersheet_input_2"
+    output = TEST / "create_mastersheet_output_2.xlsx"
 
     result = subprocess.run(
         [
@@ -94,8 +95,8 @@ def test_old_template():
 # Test two files whose columns don't match
 def test_unmatching_files():
 
-    input_dir = ROOT / "Tests" / "create_mastersheet_input_3"
-    output = ROOT / "Tests" / "create_mastersheet_output_3.xlsx"
+    input_dir = TEST / "create_mastersheet_input_3"
+    output = TEST / "create_mastersheet_output_3.xlsx"
 
     result = subprocess.run(
         [
