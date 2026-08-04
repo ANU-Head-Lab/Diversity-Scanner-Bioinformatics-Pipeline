@@ -46,11 +46,6 @@ def validate_columns_template(dataframes_and_names):
     for df, filename in dataframes_and_names:
 
         print(f"Validating columns: {filename}")
-
-        df.rename(
-            columns={"Image count ": "Image count"},
-            inplace=True
-        )
         
         print(f"Column names: {df.columns.tolist()}")
         
@@ -81,11 +76,6 @@ def validate_columns(dataframes_and_names):
 
     # Check that the same columns exist in all subsequent files
     for df, filename in dataframes_and_names[1:]:
-
-        if ("Image count ") in (df.columns):
-            df = df.rename(columns={
-                "Image count ": "Image count",
-            })
 
         print(f"Column names: {df.columns.tolist()}")
 
@@ -148,6 +138,12 @@ def main():
 
     for file in sorted(input_dir.glob("*.xlsx")):
         df = excel_to_df(file)
+
+        # Rename 'Image count ' to 'Image count'
+        if ("Image count ") in (df.columns):
+            df = df.rename(columns={
+                "Image count ": "Image count",
+            })
     
         print(f"Loaded: {file.name} ({len(df)} rows)")
         loaded.append((df, file.name))
