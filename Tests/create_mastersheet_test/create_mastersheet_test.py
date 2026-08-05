@@ -14,8 +14,8 @@ SCRIPT = ROOT / "Scripts" / "create_mastersheet.py"
 # Combine files with new template
 def test_new_template():
 
-    input_dir = TEST / "create_mastersheet_input_1"
-    output = TEST / "create_mastersheet_output_1.xlsx"
+    input_dir = TEST / "input1"
+    output = TEST / "output1.xlsx"
 
     result = subprocess.run(
         [
@@ -37,7 +37,7 @@ def test_new_template():
         # Output file exists
         assert output.exists()
 
-        input_df = pd.read_excel(input_dir / "test_df_1.xlsx")
+        input_df = pd.read_excel(input_dir / "df1.xlsx")
         merged = pd.read_excel(output)
 
         # Number of columns equal in input and output
@@ -54,8 +54,8 @@ def test_new_template():
 # Combine files with old template
 def test_old_template():
 
-    input_dir = TEST / "create_mastersheet_input_2"
-    output = TEST / "create_mastersheet_output_2.xlsx"
+    input_dir = TEST / "input2"
+    output = TEST / "output2.xlsx"
 
     result = subprocess.run(
         [
@@ -78,7 +78,7 @@ def test_old_template():
         # Output file exists
         assert output.exists()
 
-        input_df = pd.read_excel(input_dir / "test_df_1.xlsx")
+        input_df = pd.read_excel(input_dir / "df1.xlsx")
         merged = pd.read_excel(output)
 
         # Number of columns equal in input and output
@@ -95,8 +95,8 @@ def test_old_template():
 # Test two files whose columns don't match
 def test_unmatching_files():
 
-    input_dir = TEST / "create_mastersheet_input_3"
-    output = TEST / "create_mastersheet_output_3.xlsx"
+    input_dir = TEST / "input3"
+    output = TEST / "output3.xlsx"
 
     result = subprocess.run(
         [
