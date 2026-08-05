@@ -44,6 +44,12 @@ def main():
 
     # Arguments passed in through command line
     parser.add_argument(
+        "--input_dir",
+        required=True,
+        help="Directory containing entomoscope sheets for each plate"
+    )
+    
+    parser.add_argument(
         "--runinfo",
         required=True,
         help="Excel file containing list of plates in the sequencing run and their corresponding tag names"
@@ -108,7 +114,8 @@ def main():
             if args.transposeDS and "DS" in str(plate).upper() 
             else 0
             )
-        plate_df = excel_to_df(filename, sheet = sheet)
+
+        plate_df = excel_to_df(f"{args.input_dir}/{filename}", sheet = sheet)
 
         # Get specimen IDS
         if 'Image code' not in plate_df.columns:
