@@ -3,14 +3,12 @@
 import argparse
 from pathlib import Path
 import pandas as pd
-from helper_functions import (
-    excel_to_df
-)
+from helper_functions import excel_to_df, split_by_plate
 
 # Create final barcodes file and FASTA file for sequencing run
 
 # Step 1: QC filter 
-# STep 2: Format final barcodes file
+# Step 2: Format final barcodes file
 # Step 3: Summary statistics for each plate
 # Step 4: Make FASTA
 
@@ -148,10 +146,10 @@ def main():
             raise ValueError(
                 f"Column '{col}' missing from runinfo file"
             )
-    
-    summary_stats = []
 
-    # Go through each plate in the runinfo file
+    loaded = []
+
+    # Load ento sheet for each plate in runinfo file
     for plate in runinfo['Plate']:
 
         filename = f"{plate}.xlsx"
@@ -160,44 +158,36 @@ def main():
         # Load plate excel file
         plate_df = excel_to_df(f"{args.ento_sheets}/{filename}")
 
-        # Get specimen IDS
-        id = args.specimen_id_column
-        if id not in plate_df.columns:
-            raise ValueError(f"{id} column not found in {filename}")
-        specimen_ids = plate_df[id]
+        loaded.append((plate_df, filename))
 
-        # Split runsummary per plate
-        plate_barcodes = runsummary[runsummary['Specimen ID'].isin(specimen_ids)]
+    # Split runsummary by plate
+    plate_barcodes = split_by_plate(runsummary, "Specimen ID", loaded, args.specimen_id_column)
 
-        # Sort by specimen ID
-        plate_barcodes = plate_barcodes.sort_values(by="Specimen ID")
+    # Summary statistics for each plate
+    summary_stats = []
 
-        # Save plate barcodes
-        output_filename = f"{plate} barcodes.xlsx"
-        plate_barcodes.to_excel(
-            output_filename,
-            index=False
-        )
+    for i in range(len(loaded)):
 
-        print(f"Saved: {output_filename}")
+        plate_df, plate_name = loaded[i]
+        plate_barcodes_df = plate_barcodes[i]
 
         # Summary statistics
-        num_input = len(specimen_ids)
-        num_output = len(plate_barcodes)
+        num_input = len(plate_df)
+        num_output = len(plate_barcodes_df)
 
-        reads = plate_barcodes['Number of sequences demultiplexed']
+        reads = plate_barcodes_df['Number of sequences demultiplexed']
         min_reads = reads.min()
         max_reads = reads.max()
         median_reads = reads.median()
         sd_reads = reads.std()
 
-        filtered_barcodes = plate_barcodes[(plate_barcodes['passed_QC'])]
+        filtered_barcodes = plate_barcodes_df[(plate_barcodes_df['passed_QC'])]
         num_filt = len(filtered_barcodes)
 
         # Write to summary statistics
         summary_stats.append(
             {
-                "Plate": plate,
+                "Plate": plate_name.replace(".xlsx", ""),
                 "Num specimens": num_input,
                 "Num barcodes obtained": num_output,
                 "Num QC-compliant barcodes": num_filt,

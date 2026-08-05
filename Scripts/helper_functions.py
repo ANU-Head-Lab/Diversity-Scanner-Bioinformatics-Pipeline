@@ -77,3 +77,26 @@ def merge_sheets(dataframes, merge_columns):
             merged = merged.drop(columns=[right_col])
 
     return merged
+
+# Split barcodes file by plate according to specified columns
+def split_by_plate(barcodes, barcodes_column, plates, plate_column):
+
+    results = []
+
+    for df, filename in plates:
+
+        # Get specimen IDS
+        if plate_column not in df.columns:
+            raise ValueError(f"{plate_column} column not found in {filename}")
+
+        specimen_ids = df[plate_column]
+
+        # Split runsummary per plate
+        plate_barcodes = barcodes[barcodes[barcodes_column].isin(specimen_ids)]
+
+        # Sort by specimen ID
+        plate_barcodes = plate_barcodes.sort_values(by = barcodes_column)
+
+        results.append(plate_barcodes)
+
+    return results
