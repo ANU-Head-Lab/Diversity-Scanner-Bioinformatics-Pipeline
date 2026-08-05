@@ -3,6 +3,7 @@
 import argparse
 from pathlib import Path
 import pandas as pd
+from helper_functions import excel_to_df, csv_to_df
 
 # Create input file for ONT barcoder
 # Assumes correct 96 well layout: A1, A2...B1, B2...H1, H2...H12
@@ -13,29 +14,6 @@ import pandas as pd
 # File containing the Plate IDs for the given sequencing run and their corresponding tags
 # File path to 313bp/658bp masterfile
 # Output file name
-
-# Load dataframe from given excel file
-# Specify sheet name, if not provided, take first sheet
-def excel_to_df(filename, sheet = 0):
-    path = Path(filename)
-
-    # Throw error if file not found
-    if not path.exists():
-        raise FileNotFoundError(f"File not found: {filename}")
-
-    df = pd.read_excel(path, sheet_name = sheet)
-    return df
-
-# Load dataframe from given csv file
-def csv_to_df(filename):
-    path = Path(filename)
-
-    # Throw error if file not found
-    if not path.exists():
-        raise FileNotFoundError(f"File not found: {filename}")
-
-    df = pd.read_csv(path)
-    return df
 
 def main():
     parser = argparse.ArgumentParser(

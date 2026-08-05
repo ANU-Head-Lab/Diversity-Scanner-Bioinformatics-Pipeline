@@ -3,6 +3,9 @@
 import argparse
 from pathlib import Path
 import pandas as pd
+from helper_functions import (
+    excel_to_df
+)
 
 # Create final barcodes file and FASTA file for sequencing run
 
@@ -15,18 +18,6 @@ import pandas as pd
 # runsummary.xlsx
 # RunInfo.xlsx
 # Entomoscope sheets for each plate
-
-# Load dataframe from given excel file
-# Specify sheet name, if not provided, take first sheet
-def excel_to_df(filename, sheet = 0):
-    path = Path(filename)
-
-    # Throw error if file not found
-    if not path.exists():
-        raise FileNotFoundError(f"File not found: {filename}")
-
-    df = pd.read_excel(path, sheet_name = sheet)
-    return df
 
 # Load dataframe from given FASTA file
 # Expects headers to look like this: >SAMPLENAME_all.fa;658;25;ambs=0;estgaps=0
