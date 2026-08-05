@@ -48,6 +48,12 @@ def main():
         required=True,
         help="Directory containing entomoscope sheets for each plate"
     )
+
+    parser.add_argument(
+        "--specimen_id_column",
+        default="Specimen ID",
+        help="Column name in Plate Excel files that specifies the specimen ID. Default = Specimen ID"
+    )
     
     parser.add_argument(
         "--runinfo",
@@ -118,10 +124,11 @@ def main():
         plate_df = excel_to_df(f"{args.input_dir}/{filename}", sheet = sheet)
 
         # Get specimen IDS
-        if 'Image code' not in plate_df.columns:
-            raise ValueError(f"'Image code' column not found in {filename}")
+        id = args.specimen_id_column
+        if id not in plate_df.columns:
+            raise ValueError(f"{id} column not found in {filename}")
         
-        specimen_ids = plate_df['Image code']
+        specimen_ids = plate_df[id]
 
         # Get tag sequences from taginfo file
         tag_seqs = taginfo[
