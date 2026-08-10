@@ -3,6 +3,7 @@
 import argparse
 from pathlib import Path
 import pandas as pd
+from helper_functions import excel_to_df
 
 # Combine individual entomoscope sheets into mastersheet 
 # Confirm columns are the same in all individual sheets
@@ -29,17 +30,6 @@ reference_columns = [
 ]
 
 ### DEFINE FUNCTIONS ###
-
-# Load dataframe from given excel file
-# Specify sheet name, if not provided, take first sheet
-def excel_to_df(filename, sheet = 0):
-    path = Path(filename)
-
-    # Throw error if file not found
-    if not path.exists():
-        raise FileNotFoundError(f"File not found: {filename}")
-
-    return pd.read_excel(path, sheet_name = sheet)
 
 # Check column names in all plate spreadsheets match template
 def validate_columns_template(dataframes_and_names):
