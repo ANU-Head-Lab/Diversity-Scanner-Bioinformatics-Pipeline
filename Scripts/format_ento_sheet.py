@@ -3,6 +3,7 @@
 import argparse
 from pathlib import Path
 import pandas as pd
+from helper_functions import excel_to_df
 
 # Format Entomoscope sheet to match new template
 
@@ -24,19 +25,6 @@ reference_columns = [
 ]
 
 ### DEFINE FUNCTIONS ###
-
-# Load dataframe from given excel file
-# Specify sheet name, if not provided, take first sheet
-def excel_to_df(filename, sheet = 0):
-    path = Path(filename)
-
-    # Throw error if file not found
-    if not path.exists():
-        raise FileNotFoundError(f"File not found: {filename}")
-
-    df = pd.read_excel(path, sheet_name = sheet)
-
-    return df
 
 def combine_notes_columns(df, filename):
     for idx, row in df.iterrows():
