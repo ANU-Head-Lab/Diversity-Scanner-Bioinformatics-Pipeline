@@ -4,7 +4,7 @@ from pathlib import Path
 from helper_functions import excel_to_df, merge_sheets, split_by_plate
 
 # Step 1: Merge barcodes and Bold IDS for sequencing run
-# Step 2: Split file by plate and save individual files
+# Step 2: Split merged file by plate and save indiviual plate files
 
 def main():
     parser = argparse.ArgumentParser(

@@ -24,6 +24,25 @@ reference_columns = [
     "Notes"
 ]
 
+old_columns = [
+    "Insect no.",
+    "Image code",
+    "Well no.",
+    "Tag",
+    "Tag",
+    "provisional ID",
+    "Notes",
+    "Lens",
+    "Image count",
+    "Image quality",
+    "Image notes",
+    "Person",
+    "Date",
+    "Time",
+    "Site",
+    "Trap_ID"
+]
+
 ### DEFINE FUNCTIONS ###
 
 def combine_notes_columns(df, filename):
@@ -80,10 +99,6 @@ def format_df(df, filename):
 
     # Remove white spaces from column names
     df.columns = df.columns.str.replace(" ", "")
-
-    # Print column names
-    print("")
-    print(f"Column names: {df.columns.tolist()}")
 
     # Delete columns
     df = df.drop(columns={
@@ -159,7 +174,19 @@ def main():
         print(f"Loaded: {file.name} ({len(df)} rows)")
         loaded.append((df, file.name))
 
+    # Format each file
     for df, filename in loaded:
+        # First, check if input file has expected old template column names
+        cols = df.columns.str.replace(" ", "").tolist()
+        template_cols = [col.replace(" ", "") for col in old_columns]
+
+        if (cols != template_cols):
+            message = f"Unexpected column names in input dataframe. Manual reformatting may be required. \
+            \nColumns in input dataframe: {df.columns.tolist()} \
+            \nTemplate columns: {old_columns}"
+            
+            raise ValueError(message)
+
         formatted = format_df(df, filename)
 
         output_file = f"{args.output_dir}/{filename}"
