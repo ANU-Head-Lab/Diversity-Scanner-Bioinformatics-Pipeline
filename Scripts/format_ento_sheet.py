@@ -174,6 +174,12 @@ def main():
         print(f"Loaded: {file.name} ({len(df)} rows)")
         loaded.append((df, file.name))
 
+    # If no input files found
+    if not loaded:
+        raise ValueError(
+            f"No .xlsx files found in {input_dir}"
+        )
+    
     # Format each file
     for df, filename in loaded:
         # First, check if input file has expected old template column names
@@ -193,11 +199,7 @@ def main():
 
         formatted.to_excel(output_file, index=False)
     
-    # If no input files found
-    if not loaded:
-        raise ValueError(
-            f"No .xlsx files found in {input_dir}"
-        )
+    
 
 if __name__ == "__main__":
     main()
