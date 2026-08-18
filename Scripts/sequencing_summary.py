@@ -94,11 +94,20 @@ def main():
         help="Column name in ento sheets that specifies the specimen ID. Default = Specimen ID"
     )
 
+    parser.add_argument(
+        "--output_dir",
+        required = True,
+        help="Output directory name"
+    )
+
     args = parser.parse_args()
+
+    # Make output directory if it doesn't exist
+    Path(args.output_dir).mkdir(parents=True, exist_ok=True)
 
     # Parse Run Name from RunInfo file
     # Use this to format output file names
-    runname = args.runinfo.split("_")[0]
+    runname = Path(args.runinfo).stem.split("_")[0]
 
     ### STEP 1: QC filter
 
@@ -126,7 +135,7 @@ def main():
     runsummary.insert(1, "Blast Match", "")
 
     # Save barcodes file
-    output_barcodes = f"{runname}_Barcodes.xlsx"
+    output_barcodes = f"{args.output_dir}/{runname}_Barcodes.xlsx"
 
     runsummary.to_excel(output_barcodes, index = False)
 
@@ -201,7 +210,7 @@ def main():
     # Save summary statistics
     summary_df = pd.DataFrame(summary_stats)
 
-    output_summary = f"{runname}_SequencingSummary.xlsx"
+    output_summary = f"{args.output_dir}/{runname}_SequencingSummary.xlsx"
 
     summary_df.to_excel(
         output_summary,
@@ -215,7 +224,7 @@ def main():
 
     fasta_df = runsummary[["Specimen ID", "barcode"]]
 
-    output_fasta = f"{runname}.fasta"
+    output_fasta = f"{args.output_dir}/{runname}.fasta"
 
     with open(output_fasta, "w") as fasta:
         for _, row in fasta_df.iterrows():
