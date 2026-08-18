@@ -5,11 +5,20 @@ from pathlib import Path
 import pandas as pd
 from helper_functions import excel_to_df
 
+# STEP 1
 # Combine barcode/ID files for all plates in a project 
+# Add extra column "Blast Match"
+# Save
+
+# STEP 2
+# Create fasta file
+# Take only "Specimen ID" and "barcode" columns
+# Save
 
 # Takes arguments:
 # Input directory containing files to combine
-# Output file name (e.g. ProjectName_PlateXtoX_Barcodes_IDs.xlsx)
+# Output file name for barcodes and IDs (e.g. ProjectName_PlateXtoX_Barcodes_IDs.xlsx)
+# Output file name for FASTA file (e.g. ProjectName_PlateXtoX.fasta)
 
 ### MAIN ###
 
@@ -25,9 +34,14 @@ def main():
         help="Directory containing plate files to merge"
     )
     parser.add_argument(
-        "--output",
+        "--output_barcodes_ids",
         required=True,
-        help="Name for combined project file"
+        help="Name for combined barcodes/IDs file"
+    )
+    parser.add_argument(
+        "--output_fasta",
+        required=True,
+        help="Name for combined FASTA file"
     )
 
     args = parser.parse_args()
@@ -40,6 +54,8 @@ def main():
         
     if not input_dir.is_dir():
         raise ValueError(f"{input_dir} is not a directory.")
+
+    ### STEP 1
     
     # Load spreadsheet for each plate sheet in input directory
 
@@ -62,14 +78,35 @@ def main():
         [df for df, _ in loaded],
         ignore_index=True
     )
+
+    required_cols = {"Specimen ID", "barcode"}
+
+    missing = required_cols - set(combined_df.columns)
+    if missing:
+        raise ValueError(f"Combined dataframe missing required columns: {missing}")
+
     
     # Save project file
-    combined_df.to_excel(args.output, index=False)
+    combined_df.to_excel(args.output_barcodes_ids, index=False)
 
     # Print results
     print(f"Combined {len(loaded)} files")
-    print(f"Output: {args.output}")
+    print(f"Output: {args.output_barcodes_ids}")
     print(f"Total rows: {len(combined_df)}")
+
+    ### STEP 2
+
+    # Create FASTA file
+
+    fasta_df = combined_df[["Specimen ID", "barcode"]]
+
+    with open(args.output_fasta, "w") as fasta:
+        for _, row in fasta_df.iterrows():
+            fasta.write(f">{row['Specimen ID']}\n")
+            fasta.write(f"{row['barcode']}\n")
+
+    print("Wrote FASTA file.")
+    print(f"Output: {args.output_fasta}")
 
 if __name__ == "__main__":
     main()
