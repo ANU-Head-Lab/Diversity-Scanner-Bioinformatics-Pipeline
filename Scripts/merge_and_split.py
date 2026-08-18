@@ -23,7 +23,7 @@ def main():
     parser.add_argument(
         "--runinfo",
         required=True,
-        help="Output file name"
+        help="Run info file"
     )
     parser.add_argument(
         "--ento_sheets",
@@ -35,12 +35,20 @@ def main():
         default="Specimen ID",
         help="Column name in ento sheets that specifies the specimen ID. Default = Specimen ID"
     )
+    parser.add_argument(
+        "--output_dir",
+        required=True,
+        help="Directory for output files"
+    )
 
     args = parser.parse_args()
 
     # Parse Run Name
     # Use this to format output file names
-    runname = args.barcodes.split("_")[0]
+    runname = Path(args.barcodes).stem.split("_")[0]
+
+    # Make output directory if it doesn't exist
+    Path(args.output_dir).mkdir(parents=True, exist_ok=True)
 
     # Load barcodes and IDS
     barcodes = excel_to_df(args.barcodes)
@@ -53,8 +61,8 @@ def main():
     merged = merge_sheets(merge_files, merge_columns)
 
     # Save merged file
-    output_merged = f"{runname}_Barcodes_IDs.xlsx"
-    merged.to_excel(output_merged, index=False)
+    output_merged = f"{args.output_dir}/{runname}_Barcodes_IDs.xlsx"
+    merged.to_excel(output_merged, index = False)
     
     print(f"Merged spreadsheet saved to: {output_merged}")
 
@@ -94,6 +102,7 @@ def main():
         barcodes_ids = plate_barcodes_ids[i]
 
         output = plate_name.replace(".xlsx", "_Barcodes_IDs.xlsx")
+        output = f"{args.output_dir}/{output}"
 
         barcodes_ids.to_excel(output, index = False)
 

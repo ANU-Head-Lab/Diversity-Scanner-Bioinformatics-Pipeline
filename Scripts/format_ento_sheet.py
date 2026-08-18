@@ -163,6 +163,9 @@ def main():
         
     if not input_dir.is_dir():
         raise ValueError(f"{input_dir} is not a directory.")
+
+    # Create output directory if it doesn't exist
+    Path(args.output_dir).mkdir(parents=True, exist_ok=True)
     
     # Load spreadsheet for each Entomoscope sheet in input directory
 
