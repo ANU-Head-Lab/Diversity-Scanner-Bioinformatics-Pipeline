@@ -17,7 +17,7 @@ def test():
     qc_barcodes = TEST / "Test1_qc_barcodes.fa"
     num_reads_filter = 500
     runinfo = TEST / "Test1_runinfo.xlsx"
-    ento_sheets = TEST / "ento_sheets1"
+    input_dir = TEST / "input1"
     specimen_id_column = "Specimen ID"
     output_dir = TEST / "output1"
     
@@ -33,8 +33,8 @@ def test():
          str(num_reads_filter),
          "--runinfo",
          str(runinfo),
-         "--ento_sheets",
-         str(ento_sheets),
+         "--input_dir",
+         str(input_dir),
          "--specimen_id_column",
          str(specimen_id_column),
          "--output_dir",

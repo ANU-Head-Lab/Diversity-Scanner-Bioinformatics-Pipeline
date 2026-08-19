@@ -26,7 +26,7 @@ def main():
         help="Run info file"
     )
     parser.add_argument(
-        "--ento_sheets",
+        "--input_dir",
         required=True,
         help="Directory containing Entomoscope sheets for each plate in the sequencing run"
     )
@@ -79,7 +79,7 @@ def main():
                 f"Column '{col}' missing from runinfo file"
             )
 
-    # Load each plate file in ento_sheets directory
+    # Load each plate file in input directory
     loaded = []
 
     for plate in runinfo['Plate']:
@@ -88,7 +88,7 @@ def main():
         print(f"Loading plate: {plate}")
 
         # Load plate excel file
-        plate_df = excel_to_df(f"{args.ento_sheets}/{filename}")
+        plate_df = excel_to_df(f"{args.input_dir}/{filename}")
 
         loaded.append((plate_df, filename))
 

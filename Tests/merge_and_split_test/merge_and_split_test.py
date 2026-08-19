@@ -16,7 +16,7 @@ def test():
     barcodes = TEST / "Test1_Barcodes.xlsx"
     ids = TEST / "Test1_IDs.xlsx"
     runinfo = TEST / "Test1_RunInfo.xlsx"
-    ento_sheets = TEST / "ento_sheets1"
+    input_dir = TEST / "input1"
     output_dir = TEST / "output1"
     
     result = subprocess.run(
@@ -29,8 +29,8 @@ def test():
          str(ids),
          "--runinfo",
          str(runinfo),
-         "--ento_sheets",
-         str(ento_sheets),
+         "--input_dir",
+         str(input_dir),
          "--output_dir",
          str(output_dir)
         ],
