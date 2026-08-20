@@ -1,5 +1,6 @@
 import pandas as pd
 from pathlib import Path
+import sys
 
 # Helper functions that get reused in multiple scripts
 
@@ -100,3 +101,27 @@ def split_by_plate(barcodes, barcodes_column, plates, plate_column):
         results.append(plate_barcodes)
 
     return results
+
+
+# Count number of files in a directory
+def count_files_in_directory(directory_path):
+    directory_path = Path(directory_path)
+
+    # Ensure the path exists and is a directory
+    if not directory_path.exists():
+        raise ValueError(
+            f"Error: The path '{directory_path}' does not exist."
+        )
+
+    if not directory_path.is_dir():
+        raise ValueError(
+            f"Error: '{directory_path}' is not a directory."
+        )
+
+    # Count only files (exclude directories)
+    file_count = sum(
+        1 for entry in directory_path.iterdir()
+        if entry.is_file()
+    )
+
+    return file_count
