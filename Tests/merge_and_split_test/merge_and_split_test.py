@@ -5,12 +5,16 @@ import pandas as pd
 import subprocess
 from pathlib import Path
 import pandas.testing as pdt
+import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 TEST = ROOT / "Tests" / "merge_and_split_test"
 SCRIPT = ROOT / "Scripts" / "merge_and_split.py"
 
-# Create final merged file using files with new template
+# Import helper functions
+sys.path.append(str(ROOT / "Scripts"))
+from helper_functions import count_files_in_directory
+
 def test():
 
     barcodes = TEST / "Test1_Barcodes.xlsx"
@@ -40,3 +44,15 @@ def test():
 
     # No errors
     assert result.returncode == 0, result.stderr
+
+    # Number of input files = number of output files - 1
+    num_input = count_files_in_directory(input_dir)
+    num_output = count_files_in_directory(output_dir)
+    assert (num_input == num_output - 1)
+
+    # Number of columns in output = sum of barcodes and IDs columns - 1
+    input1 = pd.read_excel(barcodes)
+    input2 = pd.read_excel(ids)
+    output1 = pd.read_excel(output_dir / "RPbula Plate 74 DS_Barcodes_IDs.xlsx")
+    assert len(input1.columns) + len(input2.columns) - 1 == len(output1.columns)
+
