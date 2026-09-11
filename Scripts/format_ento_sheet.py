@@ -138,7 +138,7 @@ def format_df(df, filename):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Combine specified plate spreadsheets."
+        description="Format entomoscope sheets."
     )
 
     parser.add_argument(
