@@ -46,6 +46,12 @@ old_columns = [
 ### DEFINE FUNCTIONS ###
 
 def combine_notes_columns(df, filename):
+
+    # Convert notes columns to type string
+    df["Notes"] = df["Notes"].astype("string")
+    df["Imagequality"] = df["Imagequality"].astype("string")
+    df["Imagenotes"] = df["Imagenotes"].astype("string")
+
     for idx, row in df.iterrows():
 
         notes = row.get("Notes")
