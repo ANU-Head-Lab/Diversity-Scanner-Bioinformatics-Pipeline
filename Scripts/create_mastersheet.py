@@ -34,10 +34,6 @@ reference_columns = [
 # Check column names in all plate spreadsheets match template
 def validate_columns_template(dataframes_and_names):
     for df, filename in dataframes_and_names:
-
-        print(f"Validating columns: {filename}")
-        
-        print(f"Column names: {df.columns.tolist()}")
         
         if list(df.columns) != reference_columns:
             missing = set(reference_columns) - set(df.columns)
@@ -66,9 +62,6 @@ def validate_columns(dataframes_and_names):
 
     # Check that the same columns exist in all subsequent files
     for df, filename in dataframes_and_names[1:]:
-
-        print(f"Column names: {df.columns.tolist()}")
-
 
         if list(df.columns) != reference_columns:
             missing = set(reference_columns) - set(df.columns)
@@ -163,8 +156,8 @@ def main():
 
     # Print results
     print(f"Combined {len(loaded)} files")
-    print(f"Output: {args.output}")
     print(f"Total rows: {len(combined_df)}")
+    print(f"Mastersheet file saved to: {args.output}")
 
 
 if __name__ == "__main__":

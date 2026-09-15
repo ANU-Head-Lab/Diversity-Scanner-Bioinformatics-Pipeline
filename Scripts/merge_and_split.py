@@ -64,7 +64,7 @@ def main():
     output_merged = f"{args.output_dir}/{runname}_Barcodes_IDs.xlsx"
     merged.to_excel(output_merged, index = False)
     
-    print(f"Merged spreadsheet saved to: {output_merged}")
+    print(f"Merged Barcodes & IDs spreadsheet saved to: {output_merged}")
 
     # Load runinfo 
     # Load run info

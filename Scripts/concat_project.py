@@ -91,8 +91,8 @@ def main():
 
     # Print results
     print(f"Combined {len(loaded)} files")
-    print(f"Output: {args.output_barcodes_ids}")
     print(f"Total rows: {len(combined_df)}")
+    print(f"Concatenated project file saved to: {args.output_barcodes_ids}")
 
     ### STEP 2
 
@@ -105,8 +105,7 @@ def main():
             fasta.write(f">{row['Specimen ID']}\n")
             fasta.write(f"{row['barcode']}\n")
 
-    print("Wrote FASTA file.")
-    print(f"Output: {args.output_fasta}")
+    print(f"FASTA file saved to: {args.output_fasta}")
 
 if __name__ == "__main__":
     main()
