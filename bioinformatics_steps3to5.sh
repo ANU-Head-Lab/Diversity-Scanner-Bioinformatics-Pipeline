@@ -111,8 +111,8 @@ if [ "$START_STEP" -le 5 ]; then
 fi
 
 
-echo "Analysis of sequencing run is complete"
-echo "Run project-specific analysis using bioinformatics_steps6to10.sh"
+echo "Analysis of sequencing run is complete!"
+echo "Next step: Run project-specific analysis using bioinformatics_steps6to10.sh"
 echo
 
 
