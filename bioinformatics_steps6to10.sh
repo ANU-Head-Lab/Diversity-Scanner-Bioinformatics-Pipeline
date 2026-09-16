@@ -4,15 +4,26 @@
 set -euo pipefail
 
 # ======================================================
-# User settings
+
+# Usage example:
+# ./bioinformatics_steps6to10.sh "ProjectName_PlateXtoX" 3
+
+# First argument = project name and Plate IDs to analyse
+# Second argument = step to start at (between 6 and 10)
+
 # ======================================================
 
 # Project name and plate IDs
-# E.g. BLITZ_Plate1to6
-PROJECT="NED_Plate1to6"
+# First command line argument
+PROJECT=$1
 
 # Which step to start at?
-START_STEP=10
+# Second command line argument
+START_STEP=$2
+
+# ======================================================
+# User settings
+# ======================================================
 
 # Directories
 # Modify if required

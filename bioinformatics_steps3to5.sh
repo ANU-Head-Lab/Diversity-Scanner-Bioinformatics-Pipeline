@@ -4,13 +4,24 @@
 set -euo pipefail
 
 # ======================================================
-# User settings
+# Usage example:
+# ./bioinformatics_steps3to5.sh RunName 3
+
+# First argument = name of sequencing run to analyse
+# Second argument = step to start at (between 3 and 5)
 # ======================================================
 
-RUNNAME="2Sep26"
+# Name of sequencing run
+# First command line argument
+RUNNAME=$1
 
 # Which step to start at?
-START_STEP=5
+# Second command line argument
+START_STEP=$2
+
+# ======================================================
+# User settings
+# ======================================================
 
 # Directories
 # Modify if required
