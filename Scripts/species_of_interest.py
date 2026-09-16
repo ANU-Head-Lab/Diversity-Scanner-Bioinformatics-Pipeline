@@ -73,13 +73,13 @@ def main():
     # Arguments passed in through command line
 
     parser.add_argument(
-        "--input_dir",
+        "--input",
         required=True,
-        help="Directory containing project data files to search"
+        help="Input project file to search, or directory containing files to search"
     )
 
     parser.add_argument(
-        "--output_dir",
+        "--output",
         required=True,
         help="Directory to save output files"
     )
@@ -98,23 +98,26 @@ def main():
     pests = excel_to_df(args.species_of_interest, sheet = "National priority pest species")
     pest_species = pests['Scientific name']
 
-    # Check if input directory exists, and is a directory
-    input_dir = Path(args.input_dir)
-        
-    if not input_dir.exists():
-        raise ValueError(f"{input_dir} does not exist.")
-            
-    if not input_dir.is_dir():
-        raise ValueError(f"{input_dir} is not a directory.")
-
     # Verify output directory exists
-    output_dir = Path(args.output_dir)
-    output_dir.mkdir(parents = True, exist_ok = True)
+    output = Path(args.output)
+    output.mkdir(parents = True, exist_ok = True)
+
+    # Check if input exists
+    input = Path(args.input)
         
-    # Load spreadsheet for each project file in input directory
+    if not input.exists():
+        raise ValueError(f"{input} does not exist.")
+
     loaded = []
-    
-    for file in sorted(input_dir.glob("*.xlsx")):
+
+    # If input is a single file   
+    if not input.is_dir():
+        df = excel_to_df(input)
+        loaded.append((df, input.name))
+        print(f"Loaded: {input} ({len(df)} rows)")
+
+    # If input is a directory 
+    for file in sorted(input.glob("*.xlsx")):
         df = excel_to_df(file)
         
         print(f"Loaded: {file.name} ({len(df)} rows)")
@@ -123,7 +126,7 @@ def main():
     # If no input files found
     if not loaded:
         raise ValueError(
-            f"No .xlsx files found in {input_dir}"
+            f"No .xlsx files found in {input}"
         )
 
     # Search project files for threatened and pest species
@@ -138,9 +141,9 @@ def main():
 
         # Save threatened species 
         if (len(project_threatened) > 0):
-            output = output_dir / f"{Path(filename).stem}_threatened.xlsx"
-            project_threatened.to_excel(output, index = False)
-            print(f"Saving threatened species to: {output}")
+            output_file = output / f"{Path(filename).stem}_threatened.xlsx"
+            project_threatened.to_excel(output_file, index = False)
+            print(f"Saving threatened species to: {output_file}")
 
         project_pests = searched[
             searched['pest_flag'] == 'Pest'
@@ -149,17 +152,15 @@ def main():
 
         # Save pest species
         if(len(project_pests) > 0):
-            output = output_dir / f"{Path(filename).stem}_pests.xlsx"
-            project_pests.to_excel(output, index = False)
-            print(f"Saving pest species to: {output}")
+            output_file = output / f"{Path(filename).stem}_pests.xlsx"
+            project_pests.to_excel(output_file, index = False)
+            print(f"Saving pest species to: {output_file}")
 
         # Save flagged output file
-        output = output_dir / f"{Path(filename).stem}_flagged.xlsx"
-        searched.to_excel(
-            output,
-            index = False
-        )
-        print(f"Saving flagged project file to: {output}")
+        if(len(project_threatened) > 0 | len(project_pests) > 0):
+            output_file = output / f"{Path(filename).stem}_flagged.xlsx"
+            searched.to_excel(output_file, index = False)
+            print(f"Saving flagged project file to: {output_file}")
 
 
 if __name__ == "__main__":
