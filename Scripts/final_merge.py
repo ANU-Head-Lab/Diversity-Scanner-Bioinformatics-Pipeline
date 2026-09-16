@@ -10,7 +10,10 @@ from helper_functions import merge_sheets, excel_to_df
 # Merge by specified column
 # Keep all values in both sheets
 # Remove columns: CleanID, SpecimenID_file2, Blast match, final (Order, Class, order) columns
+# Check that Positive controls came back as 'Apis mellifera'
+# Check number of reads of negative controls, set minimum reads filter
 # Colour-code columns
+
 
 # Columns
 mastersheet_cols = [
@@ -169,6 +172,40 @@ def main():
     ordered_cols = [col for col in merged.columns if col in known_cols] + other_cols
 
     merged = merged[ordered_cols]
+
+    # Check positive controls came back as 'Apis mellifera'
+    print("\nChecking positive and negative controls...")
+
+    pos_controls_ids = ['control bee', 'bee leg', 'honey bee', 'apis mellifera', 'bee', 'positive', 'positive control', 'pos control']
+    pos_controls = merged.loc[
+        merged['Provisional ID'].str.strip().str.lower().isin(pos_controls_ids)
+        ]
+
+    print(f"\n{len(pos_controls)} positive control samples found in file")
+
+    incorrect = pos_controls.loc[pos_controls['species'] != 'Apis mellifera']
+
+    if len(incorrect) > 0:
+        print("Warning: Some positive controls were not identified as Apis mellifera")
+        print(incorrect[['Specimen ID', 'Provisional ID', 'species']])
+    else:
+        print("All positive controls were identified as Apis mellifera")
+
+    # Check number of reads of negative control samples
+    neg_controls_ids = ['control blank', 'empty', 'blank', 'negative', 'negative control', 'neg control']
+    neg_controls = merged.loc[
+        merged['Provisional ID'].str.strip().str.lower().isin(neg_controls_ids)
+        ]
+
+    print(f"\n{len(neg_controls)} negative control samples found in file")
+    print("Number of reads in negative control samples:")
+    print(neg_controls[['Specimen ID', 'Provisional ID', 'Number of sequences demultiplexed']])
+
+    max_reads_neg = neg_controls['Number of sequences demultiplexed'].max()
+    print(f"Highest number of neg control reads = {max_reads_neg}")
+    print(f"Setting minimum reads filter to {max_reads_neg}")
+
+    merged["num_reads_filter"] = (merged["Number of sequences demultiplexed"].astype(int) > max_reads_neg)
 
     # Colour code
     column_colours = {
