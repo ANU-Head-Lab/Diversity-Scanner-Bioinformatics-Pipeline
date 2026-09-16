@@ -173,26 +173,43 @@ def main():
 
     merged = merged[ordered_cols]
 
-    # Check positive controls came back as 'Apis mellifera'
+    # Check positive and negative controls
     print("\nChecking positive and negative controls...")
 
-    pos_controls_ids = ['control bee', 'bee leg', 'honey bee', 'apis mellifera', 'bee', 'positive', 'positive control', 'pos control']
-    pos_controls = merged.loc[
-        merged['Provisional ID'].str.strip().str.lower().isin(pos_controls_ids)
+    # Check positive bee controls came back as 'Apis mellifera'
+    bee_control_ids = ['control bee', 'bee leg', 'honey bee', 'apis mellifera', 'bee', 'positive', 'positive control', 'pos control', 'bee control']
+    bee_controls = merged.loc[
+        merged['Provisional ID'].str.strip().str.lower().isin(bee_control_ids)
         ]
 
-    print(f"\n{len(pos_controls)} positive control samples found in file")
+    print(f"\n{len(bee_controls)} positive bee control samples found in file")
 
-    incorrect = pos_controls.loc[pos_controls['species'] != 'Apis mellifera']
+    incorrect = bee_controls.loc[bee_controls['species'] != 'Apis mellifera']
 
     if len(incorrect) > 0:
-        print("Warning: Some positive controls were not identified as Apis mellifera")
+        print("Warning: Some bee controls were not identified as Apis mellifera")
         print(incorrect[['Specimen ID', 'Provisional ID', 'species']])
-    else:
-        print("All positive controls were identified as Apis mellifera")
+    elif len(bee_controls) > 0:
+        print("All bee controls were identified as Apis mellifera")
+
+    # Check positive beetle controls came back as 'Callosobruchus maculatus'
+    beetle_controls_ids = ['control beetle', 'beetle', 'beetle control', 'callosobruchus maculatus', 'sea beetle']
+    beetle_controls = merged.loc[
+        merged['Provisional ID'].str.strip().str.lower().isin(beetle_controls_ids)
+        ]
+
+    print(f"\n{len(beetle_controls)} positive beetle control samples found in file")
+
+    incorrect = beetle_controls.loc[beetle_controls['species'] != 'Callosobruchus maculatus']
+
+    if len(incorrect) > 0:
+        print("Warning: Some positive beetle controls were not identified as Callosobruchus maculatus")
+        print(incorrect[['Specimen ID', 'Provisional ID', 'species']])
+    elif len(beetle_controls) > 0:
+        print("All positive beetle controls were identified as Callosobruchus maculatus")
 
     # Check number of reads of negative control samples
-    neg_controls_ids = ['control blank', 'empty', 'blank', 'negative', 'negative control', 'neg control']
+    neg_controls_ids = ['control blank', 'empty', 'blank', 'negative', 'negative control', 'neg control', 'blank control', 'empty control']
     neg_controls = merged.loc[
         merged['Provisional ID'].str.strip().str.lower().isin(neg_controls_ids)
         ]
