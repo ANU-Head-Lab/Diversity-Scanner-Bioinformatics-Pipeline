@@ -29,7 +29,7 @@ BASE="$HOME/Diversity-Scanner-Bioinformatics-Pipeline"
 SCRIPTS="$BASE/Scripts"
 TESTS="$BASE/Tests"
 WORKING="$BASE/Working"
-INPUT_DIR="$WORKING/input"
+ENTO_SHEETS="$WORKING/ento_sheets"
 
 # Input files
 RUNINFO="$WORKING/${RUNNAME}_RunInfo.xlsx"
@@ -67,7 +67,7 @@ if [ "$START_STEP" -le 3 ]; then
     --qc_barcodes "$QC_BARCODES" \
     --num_reads_filter 500 \
     --runinfo "$RUNINFO" \
-    --input_dir "$INPUT_DIR" \
+    --input_dir "$ENTO_SHEETS" \
     --specimen_id_column "Specimen ID" \
     --output_dir output
 
@@ -112,7 +112,7 @@ if [ "$START_STEP" -le 5 ]; then
     --barcodes "output/${RUNNAME}_Barcodes.xlsx" \
     --ids "output/boldigger3_data/${RUNNAME}_identification_result.xlsx" \
     --runinfo "${RUNNAME}_RunInfo.xlsx" \
-    --input_dir "$INPUT_DIR" \
+    --input_dir "$ENTO_SHEETS" \
     --specimen_id_column "Specimen ID" \
     --output_dir output
 

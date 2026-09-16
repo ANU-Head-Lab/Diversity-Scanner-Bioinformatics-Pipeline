@@ -4,13 +4,11 @@
 set -euo pipefail
 
 # ======================================================
-
 # Usage example:
-# ./bioinformatics_steps6to10.sh "ProjectName_PlateXtoX" 3
+# ./bioinformatics_steps6to10.sh ProjectName_PlateXtoX 6
 
 # First argument = project name and Plate IDs to analyse
 # Second argument = step to start at (between 6 and 10)
-
 # ======================================================
 
 # Project name and plate IDs
