@@ -191,14 +191,15 @@ def main():
     
     # Format each file
     for df, filename in loaded:
+        print(f"Processing file {filename}")
         # First, check if input file has expected old template column names
         cols = df.columns.str.replace(" ", "").tolist()
         template_cols = [col.replace(" ", "") for col in old_columns]
 
         if (cols != template_cols):
             message = f"Unexpected column names in input dataframe. Manual reformatting may be required. \
-            \nColumns in input dataframe: {df.columns.tolist()} \
-            \nTemplate columns: {old_columns}"
+            \nColumns in input dataframe: {cols} \
+            \nTemplate columns: {template_cols}"
             
             raise ValueError(message)
 
