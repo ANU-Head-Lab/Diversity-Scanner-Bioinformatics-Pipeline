@@ -4,6 +4,7 @@ from pathlib import Path
 from openpyxl import load_workbook
 from openpyxl.styles import PatternFill
 from helper_functions import merge_sheets, excel_to_df
+import numpy as np
 
 # What this script does:
 # Merge Mastersheet with MOTUs/Barcodes/IDs 
@@ -222,7 +223,11 @@ def main():
     print(f"Highest number of neg control reads = {max_reads_neg}")
     print(f"Setting minimum reads filter to {max_reads_neg}")
 
-    merged["num_reads_filter"] = (merged["Number of sequences demultiplexed"].astype(int) > max_reads_neg)
+    # Leave cell blank if "Number of sequences demultiplexed" is blank
+    # Otherwise, apply filter
+
+    reads = pd.to_numeric(merged["Number of sequences demultiplexed"], errors="coerce")
+    merged["num_reads_filter"] = (reads > max_reads_neg).mask(reads.isna())
 
     # Colour code
     column_colours = {
