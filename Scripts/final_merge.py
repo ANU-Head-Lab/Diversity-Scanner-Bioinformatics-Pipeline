@@ -217,19 +217,39 @@ def main():
 
     print(f"\n{len(neg_controls)} negative control samples found in file")
     print("Number of reads in negative control samples:")
-    print(neg_controls[['Specimen ID', 'Provisional ID', 'Number of sequences demultiplexed']])
+    print(neg_controls[['Plate', 'Specimen ID', 'Provisional ID', 'Number of sequences demultiplexed']])
 
-    max_reads_neg = neg_controls['Number of sequences demultiplexed'].max()
-    print(f"Highest number of neg control reads = {max_reads_neg}")
-    print(f"Setting minimum reads filter to {max_reads_neg}")
+    # Convert reads to numeric
+    reads = pd.to_numeric(
+        merged["Number of sequences demultiplexed"],
+        errors="coerce"
+    )
 
-    # Leave cell blank if "Number of sequences demultiplexed" is blank
-    # Otherwise, apply filter
+    # Maximum negative-control reads per plate
+    plate_neg_thresholds = (
+        neg_controls
+        .assign(
+            reads=pd.to_numeric(
+                neg_controls["Number of sequences demultiplexed"],
+                errors="coerce"
+            )
+        )
+        .groupby("Plate")["reads"]
+        .max()
+    )
 
-    reads = pd.to_numeric(merged["Number of sequences demultiplexed"], errors="coerce")
-    merged["num_reads_filter"] = (reads > max_reads_neg).mask(reads.isna())
+    # Add threshold column
+    merged["neg_control_threshold"] = merged["Plate"].map(plate_neg_thresholds)
 
-    # Colour code
+    # Leave blank if reads is blank, otherwise apply filter
+    print("\nSetting per-plate minimum reads threshold as the maximum number of reads in a neg-control sample\n")
+
+    merged["num_reads_filter"] = (
+        (reads > merged["neg_control_threshold"])
+        .mask(reads.isna())
+    )
+
+    # Colour code 
     column_colours = {
         '#EBF1DE': mastersheet_template,
         '#DAEEF3': motu_cols,
