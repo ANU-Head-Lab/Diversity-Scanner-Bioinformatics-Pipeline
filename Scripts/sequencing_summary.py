@@ -70,13 +70,6 @@ def main():
     )
 
     parser.add_argument(
-        "--num_reads_filter",
-        type=int,
-        required=True,
-        help="Filter for minimum number of reads"
-    )
-
-    parser.add_argument(
         "--runinfo",
         required=True,
         help="Excel file containing list of plates in the sequencing run and their corresponding tag names"
@@ -119,9 +112,6 @@ def main():
 
     # Check if each barcode passed QC
     runsummary["passed_QC"] = runsummary["SpecimenID"].astype(str).isin(qc_ids)
-
-    # Check if barcode passes minimum number of demultiplexed reads
-    runsummary["num_reads_filter"] = (runsummary["Number of sequences demultiplexed"].astype(int) >= args.num_reads_filter)
 
     ### STEP 2: Format barcodes file
 

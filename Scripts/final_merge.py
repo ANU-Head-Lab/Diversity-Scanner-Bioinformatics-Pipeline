@@ -66,7 +66,8 @@ barcodes_cols = [
     'translation check',
     '#ambiguities',
     'passed_QC',
-    'num_reads_filter'
+    'neg_control_reads',
+    'reads_filter'
 ]
 
 bold_cols = [
@@ -119,11 +120,14 @@ def main():
     # Merge files
     merged = merge_sheets(loaded, args.merge_columns)
 
+    old_template = False
+
     # Determine which mastersheet template is present
     if all(col in merged.columns for col in mastersheet_cols):
         mastersheet_template = mastersheet_cols
 
     elif all(col in merged.columns for col in mastersheet_cols_old_template):
+        old_template = True
         mastersheet_template = mastersheet_cols_old_template
 
     else:
@@ -175,79 +179,87 @@ def main():
     merged = merged[ordered_cols]
 
     # Check positive and negative controls
-    print("\nChecking positive and negative controls...")
+    # Only do this if new template is used, for simplicity's sake
 
-    # Check positive bee controls came back as 'Apis mellifera'
-    bee_control_ids = ['control bee', 'bee leg', 'honey bee', 'apis mellifera', 'bee', 'positive', 'positive control', 'pos control', 'bee control']
-    bee_controls = merged.loc[
-        merged['Provisional ID'].str.strip().str.lower().isin(bee_control_ids)
-        ]
+    if not old_template:
 
-    print(f"\n{len(bee_controls)} positive bee control samples found in file")
+        print("\nChecking positive and negative controls...")
 
-    incorrect = bee_controls.loc[bee_controls['species'] != 'Apis mellifera']
+        # Check positive bee controls came back as 'Apis mellifera'
+        bee_control_ids = ['control bee', 'bee leg', 'honey bee', 'apis mellifera', 'bee', 'positive', 'positive control', 'pos control', 'bee control']
+        bee_controls = merged.loc[
+            merged['Provisional ID'].str.strip().str.lower().isin(bee_control_ids)
+            ]
 
-    if len(incorrect) > 0:
-        print("Warning: Some bee controls were not identified as Apis mellifera")
-        print(incorrect[['Specimen ID', 'Provisional ID', 'species']])
-    elif len(bee_controls) > 0:
-        print("All bee controls were identified as Apis mellifera")
+        print(f"\n{len(bee_controls)} positive bee control samples found in file")
 
-    # Check positive beetle controls came back as 'Callosobruchus maculatus'
-    beetle_controls_ids = ['control beetle', 'beetle', 'beetle control', 'callosobruchus maculatus', 'sea beetle']
-    beetle_controls = merged.loc[
-        merged['Provisional ID'].str.strip().str.lower().isin(beetle_controls_ids)
-        ]
+        incorrect = bee_controls.loc[bee_controls['species'] != 'Apis mellifera']
 
-    print(f"\n{len(beetle_controls)} positive beetle control samples found in file")
+        if len(incorrect) > 0:
+            print("Warning: Some bee controls were not identified as Apis mellifera")
+            print(incorrect[['Specimen ID', 'Provisional ID', 'species']])
+        elif len(bee_controls) > 0:
+            print("All bee controls were identified as Apis mellifera")
 
-    incorrect = beetle_controls.loc[beetle_controls['species'] != 'Callosobruchus maculatus']
+        # Check positive beetle controls came back as 'Callosobruchus maculatus'
+        beetle_controls_ids = ['control beetle', 'beetle', 'beetle control', 'callosobruchus maculatus', 'sea beetle']
+        beetle_controls = merged.loc[
+            merged['Provisional ID'].str.strip().str.lower().isin(beetle_controls_ids)
+            ]
 
-    if len(incorrect) > 0:
-        print("Warning: Some positive beetle controls were not identified as Callosobruchus maculatus")
-        print(incorrect[['Specimen ID', 'Provisional ID', 'species']])
-    elif len(beetle_controls) > 0:
-        print("All positive beetle controls were identified as Callosobruchus maculatus")
+        print(f"\n{len(beetle_controls)} positive beetle control samples found in file")
 
-    # Check number of reads of negative control samples
-    neg_controls_ids = ['control blank', 'empty', 'blank', 'negative', 'negative control', 'neg control', 'blank control', 'empty control']
-    neg_controls = merged.loc[
-        merged['Provisional ID'].str.strip().str.lower().isin(neg_controls_ids)
-        ]
+        incorrect = beetle_controls.loc[beetle_controls['species'] != 'Callosobruchus maculatus']
 
-    print(f"\n{len(neg_controls)} negative control samples found in file")
-    print("Number of reads in negative control samples:")
-    print(neg_controls[['Plate', 'Specimen ID', 'Provisional ID', 'Number of sequences demultiplexed']])
+        if len(incorrect) > 0:
+            print("Warning: Some positive beetle controls were not identified as Callosobruchus maculatus")
+            print(incorrect[['Specimen ID', 'Provisional ID', 'species']])
+        elif len(beetle_controls) > 0:
+            print("All positive beetle controls were identified as Callosobruchus maculatus")
 
-    # Convert reads to numeric
-    reads = pd.to_numeric(
-        merged["Number of sequences demultiplexed"],
-        errors="coerce"
-    )
+        # Check number of reads of negative control samples
+        neg_controls_ids = ['control blank', 'empty', 'blank', 'negative', 'negative control', 'neg control', 'blank control', 'empty control']
+        neg_controls = merged.loc[
+            merged['Provisional ID'].str.strip().str.lower().isin(neg_controls_ids)
+            ]
 
-    # Maximum negative-control reads per plate
-    plate_neg_thresholds = (
-        neg_controls
-        .assign(
-            reads=pd.to_numeric(
-                neg_controls["Number of sequences demultiplexed"],
-                errors="coerce"
-            )
+        print(f"\n{len(neg_controls)} negative control samples found in file")
+        print("Number of reads in negative control samples:")
+        print(neg_controls[['Plate', 'Specimen ID', 'Provisional ID', 'Number of sequences demultiplexed']])
+
+        # Convert reads to numeric
+        reads = pd.to_numeric(
+            merged["Number of sequences demultiplexed"],
+            errors="coerce"
         )
-        .groupby("Plate")["reads"]
-        .max()
-    )
 
-    # Add threshold column
-    merged["neg_control_threshold"] = merged["Plate"].map(plate_neg_thresholds)
+        # Maximum negative-control reads per plate
+        plate_neg_thresholds = (
+            neg_controls
+            .assign(
+                reads=pd.to_numeric(
+                    neg_controls["Number of sequences demultiplexed"],
+                    errors="coerce"
+                )
+            )
+            .groupby("Plate")["reads"]
+            .max()
+        )
 
-    # Leave blank if reads is blank, otherwise apply filter
-    print("\nSetting per-plate minimum reads threshold as the maximum number of reads in a neg-control sample\n")
+        # Add neg control reads column after passed_QC column
+        print("\nSetting per-plate minimum reads threshold as the maximum number of reads in a neg-control sample\n")
 
-    merged["num_reads_filter"] = (
-        (reads > merged["neg_control_threshold"])
-        .mask(reads.isna())
-    )
+        idx = merged.columns.get_loc("passed_QC") + 1
+        merged.insert(idx, "neg_control_reads", pd.NA)
+        merged["neg_control_reads"] = merged["Plate"].map(plate_neg_thresholds)
+
+        # Add reads_filter after neg_control_reads column
+        # Leave blank if reads is blank, otherwise apply filter
+        merged.insert(idx + 1, "reads_filter", pd.NA)
+        merged["reads_filter"] = (
+            (reads > merged["neg_control_reads"])
+            .mask(reads.isna())
+        )
 
     # Colour code 
     column_colours = {
