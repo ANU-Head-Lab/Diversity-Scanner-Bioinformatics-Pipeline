@@ -15,7 +15,6 @@ import numpy as np
 # Check number of reads of negative controls, set minimum reads filter
 # Colour-code columns
 
-
 # Columns
 mastersheet_cols = [
     'Specimen ID',
@@ -213,7 +212,7 @@ def main():
 
         if len(incorrect) > 0:
             print("Warning: Some positive beetle controls were not identified as Callosobruchus maculatus")
-            print(incorrect[['Specimen ID', 'Provisional ID', 'species']])
+            print(incorrect[['Plate', 'Specimen ID', 'Provisional ID', 'species']])
         elif len(beetle_controls) > 0:
             print("All positive beetle controls were identified as Callosobruchus maculatus")
 
