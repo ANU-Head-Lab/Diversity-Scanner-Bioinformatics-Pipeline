@@ -65,7 +65,6 @@ if [ "$START_STEP" -le 3 ]; then
     python "$SCRIPTS"/sequencing_summary.py \
     --runsummary "$RUNSUMMARY" \
     --qc_barcodes "$QC_BARCODES" \
-    --num_reads_filter 500 \
     --runinfo "$RUNINFO" \
     --input_dir "$ENTO_SHEETS" \
     --specimen_id_column "Specimen ID" \
