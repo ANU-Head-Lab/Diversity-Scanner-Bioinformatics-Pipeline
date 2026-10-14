@@ -92,7 +92,6 @@ def test_old_template():
         assert(len(df.columns) == 41)
         assert(len(df) == len(ms))
 
-
         # manual = pd.read_csv(manual)
 
         # pdt.assert_frame_equal(df, manual)

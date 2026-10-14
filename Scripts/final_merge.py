@@ -11,7 +11,7 @@ import numpy as np
 # Merge by specified column
 # Keep all values in both sheets
 # Remove columns: CleanID, SpecimenID_file2, Blast match, final (Order, Class, order) columns
-# Check that Positive controls came back as 'Apis mellifera'
+# Check that Positive controls came back as 'Apis mellifera' (bee) or 'Callosobruchus maculatus' (beetle)
 # Check number of reads of negative controls, set minimum reads filter
 # Colour-code columns
 
