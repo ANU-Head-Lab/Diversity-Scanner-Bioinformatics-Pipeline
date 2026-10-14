@@ -15,7 +15,6 @@ def test():
 
     runsummary = TEST /"Test1_runsummary.xlsx"
     qc_barcodes = TEST / "Test1_qc_barcodes.fa"
-    num_reads_filter = 500
     runinfo = TEST / "Test1_runinfo.xlsx"
     input_dir = TEST / "input1"
     specimen_id_column = "Specimen ID"
@@ -29,8 +28,6 @@ def test():
          str(runsummary),
          "--qc_barcodes",
          str(qc_barcodes),
-         "--num_reads_filter",
-         str(num_reads_filter),
          "--runinfo",
          str(runinfo),
          "--input_dir",

@@ -48,7 +48,7 @@ def test_new_template():
         # Check number of rows and columns
         df = pd.read_excel(output)
         ms = pd.read_excel(input1)
-        assert(len(df.columns) == 39)
+        assert(len(df.columns) == 40)
         assert(len(df) == len(ms))
 
     finally:
