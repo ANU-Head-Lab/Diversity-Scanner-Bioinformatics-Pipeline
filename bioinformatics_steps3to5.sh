@@ -40,6 +40,11 @@ QC_BARCODES="$WORKING/QC_Compliant_barcodes_noamb_noerr.fa"
 # Modify if required
 BOLD_DB="$HOME/BOLD_Public.04-Sep-2026.ddb"
 
+# Save console outputs to log file
+STARTTIME=$(date +%d%m%Y_%H%M%S)
+LOGFILE="${WORKING}/${RUNNAME}_steps3to5_log_${STARTTIME}.log"
+exec > >(tee -a "$LOGFILE")
+exec 2>&1
 
 # ======================================================
 # Begin bioinformatics pipeline

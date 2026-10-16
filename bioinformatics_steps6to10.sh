@@ -33,6 +33,12 @@ WORKING="$BASE/Working"
 ENTO_SHEETS="$WORKING/ento_sheets"
 BARCODES_IDS="$WORKING/barcodes_ids"
 
+# Save console outputs to log file
+STARTTIME=$(date +%d%m%Y_%H%M%S)
+LOGFILE="${WORKING}/${PROJECT}_steps6to10_log_${STARTTIME}.log"
+exec > >(tee -a "$LOGFILE")
+exec 2>&1
+
 # ======================================================
 # Begin bioinformatics pipeline
 # ======================================================
