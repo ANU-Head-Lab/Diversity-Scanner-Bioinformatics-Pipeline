@@ -101,5 +101,73 @@ If you are doing the Sequencing Summary step later, keep RunInfo and the Entomos
 
 If you are not doing the Sequencing Summary step any time soon, you can delete everything in your working directory.
 
+### Step 2: Demultiplexing & consensus barcodes (ONTbarcoder)
+
+This step is carried out after the completion of a sequencing run. This should be done on the Tower Computer in the EBL, as ONTbarcoder is very resource intensive. This computer operates in Linux.
+
+Refer to "Bioinformatics Protocol" for instructions for this step.
+
+### Steps 3-5
+
+Steps 3-5 of the bioinformatics pipeline can be run using a single shell script.
+
+If not already done so, follow the instructions in Step 0: Set-up.
+
+Open Ubuntu on your computer and navigate to home/uXXXXXXX/Diversity-Scanner-Bioinformatics-Pipeline.
+
+Copy and paste the following into your working directory:
+- runsummary.xlsx: All consensus barcodes for a given sequencing run. This file is located at: “ABDF/Sequencing/RunName/2.ONTbarcoder/1.ONT Output/RunName”
+- QC_Compliant_barcodes_noamb_noerr.fa: FASTA file containing only the barcodes that passed ONTbarcoder QC filtering. This file is located at: “ABDF/Sequencing/RunName/2.ONTbarcoder/1.ONT Output/RunName/Main_barcode_results”
+- RunName_RunInfo.xlsx: An excel file containing the names of the plates in the run and their corresponding tag names. This file is located at: “ABDF/Sequencing/RunName/2.ONTbarcoder/1.ONT Input”
+- The Entomoscope sheets for each plate in the sequencing run. These are located at: “ABDF/PROJECT_DATA/ProjectName/1.Entomoscope Sheets”. Paste these into their own folder inside your working directory called “ento_sheets”.
+Note: the names of the Entomoscope sheets must be exactly the same as the plate names in the RunInfo file, including spaces and capital letters.
+
+To run the code below, you should be located in the Diversity-Scanner-Bioinformatics-Pipeline directory, not your working directory.
+
+First, run this command to make the shell script into an executable file:
+
+	chmod +x bioinformatics_steps3to5.sh
+    
+Now run the script:
+
+    ./bioinformatics_steps3to5.sh RunName Step
+
+Change RunName to the name of the sequencing run you are analysing 
+
+Change Step to the step you wish to start at (i.e. a number between 3 and 5)
+
+Progress updates will be printed to the terminal and also saved in a log file. This file will be named “RunName_steps3to5_log_DDMMYYYY_HHMMSS.log”. The final part of the file name is the date and time that the pipeline started. 
+
+Once the pipeline is complete, move the output files to the relevant locations in the “ABDF/Sequencing” folder. See the “Stopping point” sections below for instructions. Also move the log file into the “Sequencing/RunName” folder, so that you can refer to it later if required. 
+
+To run the individual steps manually, refer to "Bioinformatics Protocol".
+
+### Steps 6-10
+
+From this step onwards, you will be analysing a specific project rather than a specific sequencing run. In all the file names below, change ProjectName_PlateXtoX to reflect the project and plate numbers you are analysing.
+
+Steps 6-10 of the bioinformatics pipeline can be run using a single shell script.
+
+You will need:
+- PlateID_Barcodes_IDs.xlsx: Barcodes and BOLD IDs for each plate in the project (or a subset of plates) that you want to combine. You may need to get these from different sequencing runs. These files are located at “ABDF/Sequencing/RunName/5.Project Plates”. Place these together in a folder inside your working directory called “barcodes_ids”.
+- The Entomoscope sheets for each plate in the sequencing run. These are located at: “ABDF/PROJECT_DATA/ProjectName/1.Entomoscope Sheets”. Paste these into their own folder inside your working directory called “ento_sheets”.
+
+To run the code below, you should be located in the Diversity-Scanner-Bioinformatics-Pipeline directory, not your working directory.
+
+First, run this command to make the shell script into an executable file:
+
+	chmod +x bioinformatics_steps6to10.sh
+
+Now run the script:
+
+    ./bioinformatics_steps6to10.sh ProjectName_PlateXtoX Step
+    
+Change ProjectName_PlateXtoX to the Project and plate numbers you are analysing 
+Change Step to the step you wish to start at (i.e. a number between 6 and 10)
+
+Progress updates will be printed to the terminal and also saved in a log file. This file will be named “ProjectName_PlateXtoX_steps6to10_log_DDMMYYYY_HHMMSS.log”. The final part of the file name is the date and time that the pipeline started. 
+Once the pipeline is complete, move the output files to the relevant locations in the “ABDF/PROJECT_DATA” folder. See the “Stopping point” sections below for instructions. Also move the log file into the “PROJECT_DATA/ProjectName” folder, so that you can refer to it later if required. 
+
+To run the individual steps manually, refer to "Bioinformatics Protocol".
 
 
