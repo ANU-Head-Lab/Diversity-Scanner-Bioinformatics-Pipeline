@@ -105,7 +105,7 @@ If you are not doing the Sequencing Summary step any time soon, you can delete e
 
 This step is carried out after the completion of a sequencing run. This should be done on the Tower Computer in the EBL, as ONTbarcoder is very resource intensive. This computer operates in Linux.
 
-Refer to "Bioinformatics Protocol" for instructions for this step.
+Refer to "Files/GitHub Bioinformatics Protocol" for instructions for this step.
 
 ### Steps 3-5
 
@@ -140,7 +140,7 @@ Progress updates will be printed to the terminal and also saved in a log file. T
 
 Once the pipeline is complete, move the output files to the relevant locations in the “ABDF/Sequencing” folder. See the “Stopping point” sections below for instructions. Also move the log file into the “Sequencing/RunName” folder, so that you can refer to it later if required. 
 
-To run the individual steps manually, refer to "Bioinformatics Protocol".
+To run the individual steps manually, refer to "Files/GitHub Bioinformatics Protocol".
 
 ### Steps 6-10
 
@@ -168,6 +168,6 @@ Change Step to the step you wish to start at (i.e. a number between 6 and 10)
 Progress updates will be printed to the terminal and also saved in a log file. This file will be named “ProjectName_PlateXtoX_steps6to10_log_DDMMYYYY_HHMMSS.log”. The final part of the file name is the date and time that the pipeline started. 
 Once the pipeline is complete, move the output files to the relevant locations in the “ABDF/PROJECT_DATA” folder. See the “Stopping point” sections below for instructions. Also move the log file into the “PROJECT_DATA/ProjectName” folder, so that you can refer to it later if required. 
 
-To run the individual steps manually, refer to "Bioinformatics Protocol".
+To run the individual steps manually, refer to "Files/GitHub Bioinformatics Protocol".
 
 
