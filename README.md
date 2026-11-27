@@ -1,5 +1,5 @@
 # Diversity-Scanner-Bioinformatics-Pipeline
-Post-sequencing bioinformatics workflow for the CBA Diversity Scanner project. In brief, this involves demultiplexing, generating consensus barcodes, quality filtering, assigning taxonomy, and clustering into MOTUs.
+Post-sequencing bioinformatics workflow for the ABDF Diversity Scanner project. In brief, this involves demultiplexing, generating consensus barcodes, quality filtering, assigning taxonomy, and clustering into MOTUs.
 
 ## Workflow
 
@@ -17,6 +17,8 @@ Post-sequencing bioinformatics workflow for the CBA Diversity Scanner project. I
 |10|Flag species of interest|species_of_interest.py|Search through project file and flag any species matching the “Species of interest” database (threatened invertebrates, pests, etc.)|
 
 ## Step 0: Set up
+
+If you are running this pipeline for the first time, see "Installing dependencies" section at the end of this document.
 
 Open Ubuntu and navigate to your home directory (home/uXXXXXXX).
 
@@ -170,4 +172,69 @@ Once the pipeline is complete, move the output files to the relevant locations i
 
 To run the individual steps manually, refer to "Files/GitHub Bioinformatics Protocol".
 
+### Installing Dependencies
+
+#### Install Python
+
+Open an Ubuntu terminal and type:
+
+	sudo apt update
+	sudo apt install python3-venv -y
+
+#### Set up Python environment
+
+Create your python environment (you only need to do this once):
+
+	python3 -m venv myenv
+
+Activate your python environment (you need to do this every time you begin analysis):
+	
+	source myenv/bin/activate
+
+Install required python packages (you only need to do this once):
+
+	pip install pandas matplotlib requests openpyxl numpy pytest
+
+To exit your environment, type:
+
+	deactivate
+
+#### Install BOLDigger3
+
+Activate your Python environment, then type:
+
+	pip install boldigger3
+
+If you get an error something like this:
+
+	File "/home/u4012112/myenv/lib/python3.12/site-packages/lxml/html/clean.py", line 18, in <module>
+	    raise ImportError(
+	ImportError: lxml.html.clean module is now a separate project lxml_html_clean.
+	Install lxml[html_clean] or lxml_html_clean directly.
+
+You just need to install lxml[html_clean]
+
+	pip install "lxml[html_clean]"
+
+Before running identifications, also download the latest BOLD public database package. This step requires a valid BOLD account (register at www.boldsystems.org):
+
+	boldigger3 download_db PATH_TO_OUTPUT_DIR
+
+BOLDigger3 will prompt for your BOLD username and password, check whether a local database already exists, and download and convert the latest release to a DuckDB file (.ddb) if needed. You should re-do this step once every few weeks to keep your database up to date.
+
+When a new version of BOLDigger3 is released, you can update it by typing:
+
+	pip install --upgrade boldigger3
+
+#### Install Vsearch and SWARM (Used for MOTU pipeline)
+In Ubuntu (not inside your Python environment), type:
+
+	sudo apt update
+	sudo apt install vsearch
+	sudo apt install swarm
+
+To verify successful installation, use the following:
+
+	vsearch --version
+	swarm -h
 
